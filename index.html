@@ -65,7 +65,7 @@
             animation: fadeIn 2s 2s forwards;
             font-size: clamp(1rem, 3vw, 1.5rem);
             width: 100%;
-            transform: translateX(-0.3vw);
+            /* transform: translateX(-0.3vw); */
         }
 
         .heart-wrapper {
@@ -73,6 +73,7 @@
             width: var(--heart-size);
             height: var(--heart-size);
             flex-shrink: 0;
+            cursor: pointer;
         }
 
         .heart {
@@ -80,6 +81,28 @@
             width: 100%;
             height: 100%;
             animation: grow 2s ease-out forwards, heartbeat 1.5s ease-in-out infinite 2s;
+        }
+
+        .ripple {
+            position: absolute;
+            border: 2px solid var(--primary-color);
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            opacity: 0;
+            pointer-events: none;
+            animation: none;
+        }
+
+        @keyframes rippleEffect {
+            0% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(2);
+                opacity: 0;
+            }
         }
 
         .heart::before,
@@ -134,7 +157,7 @@
             .heart-wrapper{
                 margin-top: 25px;
             }
-            
+
             .heart-container {
                 flex-direction: column;
             }
@@ -203,6 +226,30 @@
 
         setInterval(updateTimer, 1000);
         updateTimer();
+
+        // Heart interaction
+        const heartWrapper = document.querySelector('.heart-wrapper');
+        const heart = document.querySelector('.heart');
+
+        function createRipple() {
+            const ripple = document.createElement('div');
+            ripple.className = 'ripple';
+            heartWrapper.appendChild(ripple);
+
+            ripple.style.animation = 'rippleEffect 1s ease-out forwards';
+
+            // Vibration feedback if supported
+            if ('vibrate' in navigator) {
+                navigator.vibrate(100);
+            }
+
+            // Remove ripple element after animation
+            ripple.addEventListener('animationend', () => {
+                ripple.remove();
+            });
+        }
+
+        heartWrapper.addEventListener('click', createRipple);
     </script>
 </body>
 </html>
